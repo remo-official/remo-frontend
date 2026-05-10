@@ -1,13 +1,7 @@
-import { Typography } from "@wanteddev/wds";
+import { Stack } from '@/stackflow';
 
 export function App() {
-  return (
-    <div style={{ padding: 24 }}>
-      <Typography variant="title2" weight="bold">
-        리모
-      </Typography>
-    </div>
-  );
+  return <Stack />;
 }
 
 export default App;

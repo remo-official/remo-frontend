@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "seed-docs": {
-      "command": "bunx",
-      "args": ["-y", "@seed-design/docs-mcp"]
-    }
-  }
-}

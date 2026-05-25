@@ -1,7 +1,6 @@
 # 리모(Rimo) — 에이전트 구현 스펙
 
 온라인 패션의 가짜 리뷰·정보 불신을 해결하는 리뷰 기반 신뢰형 커머스 플랫폼.
-디자인 시스템은 **Seed Design System (당근마켓)** 을 사용한다.
 
 ---
 
@@ -64,17 +63,3 @@ Bottom Navigation: 홈 | 탐색 | [리뷰 작성 CTA] | 마이
 - 포인트 대시보드: 보유 포인트 + 이번달 예상 / 연결 구매 건수 / 전환율 (3-stat)
 - 리뷰 리스트 아이템에 리뷰별 적립 포인트 노출 — 고품질 리뷰 인센티브
 - 프로필 부제에 체형 정보 (키·몸무게) 통합
-
----
-
-## Seed 미지원 — 커스텀 구현 필요
-
-| 요소 | 사유 |
-|------|------|
-| 채팅 버블 | Seed에 Chat UI 없음 |
-| 착용 이미지 Carousel | Seed에 Carousel 없음 — 외부 라이브러리 사용 |
-| Step 진행 표시바 | Seed에 Step indicator 없음 |
-| 파일 업로드 존 | Seed에 Dropzone 없음 |
-| 포인트 Stat 카드 | Seed 컴포넌트 조합으로 구현 |
-| 핏 Dot Meter (상세) | Slider readOnly로 대체 가능 |
-| Bottom Navigation | Seed에 없음 — 커스텀 구현 |

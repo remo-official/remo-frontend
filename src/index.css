@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+html {
+  /* 스크롤바 유무에 따른 layout shift 방지 */
+  scrollbar-gutter: stable;
+}
+
 html, body {
   margin: 0;
   padding: 0;

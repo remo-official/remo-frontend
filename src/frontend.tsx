@@ -16,7 +16,12 @@ const queryClient = new QueryClient({
 
 async function prepare() {
   const { worker } = await import('./mocks/browser');
-  return worker.start({ onUnhandledRequest: 'bypass' });
+  // window.location.pathname: 로컬 = '/', GitHub Pages = '/remo-frontend/'
+  // → 서브패스 배포에서도 SW 파일을 올바른 경로에서 찾도록 동적 처리
+  return worker.start({
+    onUnhandledRequest: 'bypass',
+    serviceWorker: { url: `${window.location.pathname}mockServiceWorker.js` },
+  });
 }
 
 const elem = document.getElementById("root")!;

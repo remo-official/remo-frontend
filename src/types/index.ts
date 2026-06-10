@@ -57,6 +57,7 @@ export interface ChatRoom {
   reviewId: string;
   reviewer: User;
   requester: User;
+  product: Product;
   messages: Message[];
 }
 

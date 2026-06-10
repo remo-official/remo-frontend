@@ -242,6 +242,7 @@ export const MOCK_CHAT_ROOMS: ChatRoom[] = [
     reviewId: 'r1',
     reviewer: MOCK_USERS[0]!,
     requester: MOCK_USERS[1]!,
+    product: MOCK_PRODUCTS[0]!,
     messages: [
       {
         id: 'm1',

@@ -21,6 +21,58 @@ import { CURRENT_USER } from '@/mocks/data';
 import type { ChatRoom, Message } from '@/types';
 import { useFlow } from '@/stackflow';
 
+function ProductCard({ room }: { room: ChatRoom }) {
+  return (
+    <FlexBox justifyContent="flex-start" alignItems="flex-end" gap="6px">
+      <Avatar
+        variant="person"
+        size="xsmall"
+        src={room.reviewer.avatar}
+        alt={room.reviewer.name}
+        sx={{ flexShrink: 0, marginBottom: '4px' }}
+      />
+      <FlexBox flexDirection="column" gap="2px" alignItems="flex-start" sx={{ maxWidth: '70%' }}>
+        <Box
+          sx={theme => ({
+            borderRadius: '16px 16px 16px 4px',
+            backgroundColor: theme.semantic.background.normal.alternative,
+            overflow: 'hidden',
+          })}
+        >
+          <FlexBox gap="10px" sx={{ padding: '10px 12px' }}>
+            <Thumbnail
+              src={room.product.thumbnail}
+              alt={room.product.name}
+              ratio="4:3"
+              portrait
+              width="48px"
+              radius
+              sx={{ flexShrink: 0 }}
+            />
+            <FlexBox flexDirection="column" gap="2px" justifyContent="center">
+              <Typography
+                variant="caption2"
+                sx={theme => ({ color: theme.semantic.label.alternative })}
+              >
+                문의하신 상품
+              </Typography>
+              <Typography variant="caption1" weight="medium" noWrap sx={{ maxWidth: '140px' }}>
+                {room.product.name}
+              </Typography>
+              <Typography
+                variant="caption2"
+                sx={theme => ({ color: theme.semantic.label.alternative })}
+              >
+                {room.product.brand}
+              </Typography>
+            </FlexBox>
+          </FlexBox>
+        </Box>
+      </FlexBox>
+    </FlexBox>
+  );
+}
+
 export default function ChatPage() {
   const { roomId } = useActivityParams<{ roomId: string }>();
   const { pop } = useFlow();
@@ -83,7 +135,6 @@ export default function ChatPage() {
         flexDirection="column"
         sx={{ height: '100vh', maxWidth: '480px', margin: '0 auto' }}
       >
-        {/* TopNavigation */}
         <TopNavigation
           leadingContent={
             <TopNavigationButton variant="icon" onClick={() => pop()}>
@@ -94,45 +145,15 @@ export default function ChatPage() {
           {room.reviewer.name} 리뷰어
         </TopNavigation>
 
-        {/* 상품 컨텍스트 바 (스크롤해도 고정) */}
-        <FlexBox
-          alignItems="center"
-          gap="10px"
-          sx={theme => ({
-            padding: '10px 16px',
-            backgroundColor: theme.semantic.background.normal.alternative,
-            borderBottom: `1px solid ${theme.semantic.line.solid.alternative}`,
-            flexShrink: 0,
-          })}
-        >
-          <Thumbnail
-            src={room.reviewer.avatar}
-            alt={room.reviewer.name}
-            ratio="1:1"
-            width="36px"
-            radius
-            border
-            sx={{ flexShrink: 0 }}
-          />
-          <FlexBox flexDirection="column" gap="1px">
-            <Typography variant="caption1" weight="medium" noWrap>
-              무신사 스탠다드 오버사이즈 체크 울 코트
-            </Typography>
-            <Typography
-              variant="caption2"
-              sx={theme => ({ color: theme.semantic.label.alternative })}
-            >
-              {room.reviewer.name} 리뷰어와 상담 중
-            </Typography>
-          </FlexBox>
-        </FlexBox>
-
         {/* 메시지 목록 */}
         <FlexBox
           flexDirection="column"
           gap="12px"
           sx={{ flex: 1, overflowY: 'auto', padding: '16px', paddingBottom: '80px' }}
         >
+          {/* 상품 정보 — 상대 메시지 형식 */}
+          <ProductCard room={room} />
+
           <AnimatePresence initial={false}>
           {messages.map(msg => {
             const isMine = msg.senderId === CURRENT_USER.id;
@@ -200,7 +221,7 @@ export default function ChatPage() {
           <div ref={bottomRef} />
         </FlexBox>
 
-        {/* 하단 입력 바 — position:fixed 제거: height:100vh flex 레이아웃에서 fixed는 Stackflow transform과 충돌 */}
+        {/* 하단 입력 바 */}
         <FlexBox
           alignItems="center"
           gap="8px"

@@ -92,8 +92,9 @@ function GridCard({ review, onClick }: GridCardProps) {
     <Card
       as="button"
       platform="mobile"
+      width="100%"
       onClick={onClick}
-      sx={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0 }}
+      sx={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0, minWidth: 0, boxSizing: 'border-box' }}
     >
       <CardThumbnail
         src={images[0]}
@@ -101,6 +102,7 @@ function GridCard({ review, onClick }: GridCardProps) {
         ratio="4:3"
         portrait
         width="100%"
+        sx={{ aspectRatio: '3/4', overflow: 'hidden' }}
         trailingContent={
           isVerified ? (
             <CardThumbnailContent variant="custom">
@@ -110,7 +112,7 @@ function GridCard({ review, onClick }: GridCardProps) {
         }
       />
       <CardContent>
-        <CardTitle>{user.name}</CardTitle>
+        <CardTitle noWrap>{user.name}</CardTitle>
         <CardCaption noWrap>
           {user.bodyInfo.height}cm · {user.bodyInfo.weight}kg · {purchasedSize}
         </CardCaption>

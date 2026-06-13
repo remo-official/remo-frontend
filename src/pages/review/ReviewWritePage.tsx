@@ -1044,10 +1044,10 @@ export default function ReviewWritePage() {
             top: '56px',
             zIndex: 9,
             backgroundColor: theme.semantic.background.normal.normal,
-            padding: '28px 20px 24px',
+            padding: '16px 8px 12px',
           })}
         >
-          <Stepper value={String(step)}>
+          <Stepper value={String(step)} sx={{ '& span, & p': { whiteSpace: 'nowrap' } }}>
             {STEP_LABELS.map((label, i) => (
               <StepperItem key={i} value={String(i + 1)} label={label} completedLabel={label} />
             ))}

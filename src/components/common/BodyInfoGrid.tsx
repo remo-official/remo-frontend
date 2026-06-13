@@ -42,15 +42,11 @@ export default function BodyInfoGrid({
   purchaseSize,
 }: BodyInfoGridProps) {
   return (
-    <FlexBox flexDirection="column" gap="8px">
-      <FlexBox gap="8px">
-        <GridCell label="키" value={`${height}cm`} />
-        <GridCell label="몸무게" value={`${weight}kg`} />
-      </FlexBox>
-      <FlexBox gap="8px">
-        <GridCell label="평소 사이즈" value={normalSize} />
-        <GridCell label="구매 사이즈" value={purchaseSize} />
-      </FlexBox>
+    <FlexBox gap="8px">
+      <GridCell label="키" value={`${height}cm`} />
+      <GridCell label="몸무게" value={`${weight}kg`} />
+      <GridCell label="평소 사이즈" value={normalSize} />
+      <GridCell label="구매 사이즈" value={purchaseSize} />
     </FlexBox>
   );
 }

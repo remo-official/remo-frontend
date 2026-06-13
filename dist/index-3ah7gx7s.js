@@ -876,9 +876,8 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
 
 // node_modules/react/index.js
 var require_react = __commonJS((exports, module) => {
-  var react_development = __toESM(require_react_development());
   if (false) {} else {
-    module.exports = react_development;
+    module.exports = require_react_development();
   }
 });
 
@@ -1139,9 +1138,8 @@ var require_scheduler_development = __commonJS((exports) => {
 
 // node_modules/scheduler/index.js
 var require_scheduler = __commonJS((exports, module) => {
-  var scheduler_development = __toESM(require_scheduler_development());
   if (false) {} else {
-    module.exports = scheduler_development;
+    module.exports = require_scheduler_development();
   }
 });
 
@@ -1330,9 +1328,8 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
 
 // node_modules/react-dom/index.js
 var require_react_dom = __commonJS((exports, module) => {
-  var react_dom_development = __toESM(require_react_dom_development());
   if (false) {} else {
-    module.exports = react_dom_development;
+    module.exports = require_react_dom_development();
   }
 });
 
@@ -16906,9 +16903,8 @@ You might need to use a local HTTP server (instead of file://): https://react.de
 
 // node_modules/react-dom/client.js
 var require_client = __commonJS((exports, module) => {
-  var react_dom_client_development = __toESM(require_react_dom_client_development());
   if (false) {} else {
-    module.exports = react_dom_client_development;
+    module.exports = require_react_dom_client_development();
   }
 });
 
@@ -17064,9 +17060,8 @@ var require_react_is_development = __commonJS((exports) => {
 
 // node_modules/react-is/index.js
 var require_react_is = __commonJS((exports, module) => {
-  var react_is_development = __toESM(require_react_is_development());
   if (false) {} else {
-    module.exports = react_is_development;
+    module.exports = require_react_is_development();
   }
 });
 
@@ -17641,9 +17636,8 @@ React keys must be passed directly to JSX without using spread:
 
 // node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS((exports, module) => {
-  var react_jsx_runtime_development = __toESM(require_react_jsx_runtime_development());
   if (false) {} else {
-    module.exports = react_jsx_runtime_development;
+    module.exports = require_react_jsx_runtime_development();
   }
 });
 
@@ -18887,9 +18881,8 @@ React keys must be passed directly to JSX without using spread:
 
 // node_modules/react/jsx-dev-runtime.js
 var require_jsx_dev_runtime = __commonJS((exports, module) => {
-  var react_jsx_dev_runtime_development = __toESM(require_react_jsx_dev_runtime_development());
   if (false) {} else {
-    module.exports = react_jsx_dev_runtime_development;
+    module.exports = require_react_jsx_dev_runtime_development();
   }
 });
 
@@ -79514,7 +79507,7 @@ function finalize(ctx, schema) {
     result.$schema = "http://json-schema.org/draft-07/schema#";
   } else if (ctx.target === "draft-04") {
     result.$schema = "http://json-schema.org/draft-04/schema#";
-  } else if (ctx.target === "openapi-3.0") {} else {}
+  } else if (ctx.target === "openapi-3.0") {}
   if (ctx.external?.uri) {
     const id4 = ctx.external.registry.get(schema)?.id;
     if (!id4)
@@ -79758,7 +79751,7 @@ var literalProcessor = (schema, ctx, json, _params) => {
     if (val === undefined) {
       if (ctx.unrepresentable === "throw") {
         throw new Error("Literal `undefined` cannot be represented in JSON Schema");
-      } else {}
+      }
     } else if (typeof val === "bigint") {
       if (ctx.unrepresentable === "throw") {
         throw new Error("BigInt literals cannot be represented in JSON Schema");
@@ -82390,7 +82383,9 @@ var INITIAL_DRAFT = {
   text: "",
   purchaseDate: null,
   isVerified: false,
-  receiptImageUrl: ""
+  receiptImageUrl: "",
+  ocrStatus: "idle",
+  ocrExtracted: null
 };
 var step1Schema = exports_external.object({
   images: exports_external.array(exports_external.string()).min(1, "사진을 최소 1장 올려주세요")
@@ -82398,7 +82393,10 @@ var step1Schema = exports_external.object({
 var step2Schema = exports_external.object({
   product: exports_external.custom((val) => val !== null, "상품을 선택해주세요")
 });
-var step4Schema = exports_external.object({
+var step3Schema = exports_external.object({
+  isVerified: exports_external.literal(true)
+});
+var step5Schema = exports_external.object({
   text: exports_external.string().refine((s) => s.trim().length >= 20, "리뷰는 최소 20자 이상 입력해주세요"),
   purchaseDate: exports_external.instanceof(Date, { message: "구매 날짜를 선택해주세요" })
 });
@@ -82409,9 +82407,11 @@ function isStepValid(step, draft) {
     case 2:
       return step2Schema.safeParse(draft).success;
     case 3:
-      return true;
+      return step3Schema.safeParse(draft).success;
     case 4:
-      return step4Schema.safeParse(draft).success;
+      return true;
+    case 5:
+      return step5Schema.safeParse(draft).success;
     default:
       return false;
   }
@@ -82581,13 +82581,668 @@ function Step2Product({ draft, onUpdate }) {
     ]
   }, undefined, true, undefined, this);
 }
+var MOCK_PURCHASE_RECORDS = [
+  {
+    id: "pr1",
+    platform: "네이버페이",
+    productName: "레이어드 오버핏 셔츠 / 화이트 / XL",
+    amount: 59000,
+    date: "2025-03-14",
+    orderId: "NP2025031412345"
+  },
+  {
+    id: "pr2",
+    platform: "카카오페이",
+    productName: "와이드 데님 팬츠 / 인디고 / 29",
+    amount: 89000,
+    date: "2025-02-28",
+    orderId: "KP2025022867890"
+  },
+  {
+    id: "pr3",
+    platform: "토스페이",
+    productName: "크루넥 니트 스웨터 / 오트밀 / M",
+    amount: 72000,
+    date: "2025-02-10",
+    orderId: "TP2025021043210"
+  }
+];
+var PLATFORM_COLORS = {
+  "네이버페이": "#03c75a",
+  "카카오페이": "#fee500",
+  "토스페이": "#0064ff"
+};
+function Step3OCR({ draft, onUpdate }) {
+  const [tab, setTab] = import_react187.useState(0);
+  const [scanProgress, setScanProgress] = import_react187.useState(0);
+  const fileInputRef = import_react187.useRef(null);
+  const timerRef = import_react187.useRef(null);
+  import_react187.useEffect(() => {
+    if (draft.ocrStatus === "scanning") {
+      onUpdate({ ocrStatus: "idle", isVerified: false });
+    }
+    return () => {
+      if (timerRef.current)
+        clearInterval(timerRef.current);
+    };
+  }, []);
+  const startOcrScan = (imageUrl, extracted2) => {
+    onUpdate({
+      receiptImageUrl: imageUrl,
+      ocrStatus: "scanning",
+      isVerified: false,
+      ocrExtracted: null
+    });
+    setScanProgress(0);
+    let progress2 = 0;
+    timerRef.current = setInterval(() => {
+      progress2 += Math.floor(Math.random() * 12) + 6;
+      if (progress2 >= 100) {
+        progress2 = 100;
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        setScanProgress(100);
+        setTimeout(() => {
+          onUpdate({
+            isVerified: true,
+            ocrStatus: "success",
+            ocrExtracted: extracted2,
+            purchaseDate: new Date(extracted2.date)
+          });
+        }, 400);
+      }
+      setScanProgress(progress2);
+    }, 120);
+  };
+  const handleReceiptUpload = (e) => {
+    const file2 = e.target.files?.[0];
+    if (!file2)
+      return;
+    const imageUrl = URL.createObjectURL(file2);
+    e.target.value = "";
+    startOcrScan(imageUrl, {
+      productName: draft.product?.name ?? "구매 상품",
+      amount: draft.product?.price ?? 0,
+      date: new Date().toISOString().split("T")[0],
+      platform: "영수증"
+    });
+  };
+  const handleSelectPurchaseRecord = (record2) => {
+    startOcrScan("", {
+      productName: record2.productName,
+      amount: record2.amount,
+      date: record2.date,
+      platform: record2.platform
+    });
+  };
+  const handleReset = () => {
+    if (timerRef.current)
+      clearInterval(timerRef.current);
+    timerRef.current = null;
+    setScanProgress(0);
+    onUpdate({ receiptImageUrl: "", isVerified: false, ocrStatus: "idle", ocrExtracted: null });
+  };
+  const isScanning = draft.ocrStatus === "scanning";
+  const isSuccess = draft.ocrStatus === "success";
+  const extracted = draft.ocrExtracted;
+  return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+    flexDirection: "column",
+    sx: { paddingBottom: "100px" },
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+        flexDirection: "column",
+        gap: "6px",
+        sx: { padding: "20px 16px 16px" },
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+            alignItems: "center",
+            gap: "8px",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                variant: "title3",
+                weight: "bold",
+                children: "구매 인증"
+              }, undefined, false, undefined, this),
+              isSuccess && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(motion.div, {
+                initial: { scale: 0.7, opacity: 0 },
+                animate: { scale: 1, opacity: 1 },
+                transition: { type: "spring", stiffness: 400, damping: 20 },
+                children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                  sx: (theme2) => ({
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    padding: "3px 10px",
+                    borderRadius: "100px",
+                    backgroundColor: "#e6f7ef"
+                  }),
+                  children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                    variant: "caption1",
+                    weight: "bold",
+                    sx: { color: "#16b162" },
+                    children: "✓ 인증 완료"
+                  }, undefined, false, undefined, this)
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+            variant: "body2",
+            sx: (theme2) => ({ color: theme2.semantic.label.alternative }),
+            children: isSuccess ? "구매가 확인됐어요. 다음 단계로 이동하세요." : "영수증이나 구매내역으로 구매를 인증해주세요"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      !isScanning && !isSuccess && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(jsx_dev_runtime14.Fragment, {
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+            sx: { paddingInline: "16px", marginBottom: "16px", gap: "8px" },
+            children: ["영수증 업로드", "구매내역 연동"].map((label, i) => /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+              as: "button",
+              onClick: () => setTab(i),
+              sx: (theme2) => ({
+                flex: 1,
+                padding: "10px 0",
+                borderRadius: "10px",
+                border: tab === i ? `1.5px solid ${theme2.semantic.primary.normal}` : `1.5px solid ${theme2.semantic.line.solid.normal}`,
+                backgroundColor: tab === i ? "rgba(0,122,255,0.05)" : "transparent",
+                cursor: "pointer",
+                background: tab === i ? "rgba(0,122,255,0.05)" : "none",
+                transition: "all 0.15s"
+              }),
+              children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                variant: "label1",
+                weight: "medium",
+                sx: (theme2) => ({
+                  color: tab === i ? theme2.semantic.primary.normal : theme2.semantic.label.normal
+                }),
+                children: label
+              }, undefined, false, undefined, this)
+            }, i, false, undefined, this))
+          }, undefined, false, undefined, this),
+          tab === 0 && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+            flexDirection: "column",
+            gap: "12px",
+            sx: { paddingInline: "16px" },
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                as: "button",
+                onClick: () => fileInputRef.current?.click(),
+                sx: (theme2) => ({
+                  aspectRatio: "16/9",
+                  borderRadius: "12px",
+                  border: `2px dashed ${theme2.semantic.line.solid.alternative}`,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "12px",
+                  cursor: "pointer",
+                  background: "none",
+                  transition: "border-color 0.15s"
+                }),
+                children: [
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                    sx: (theme2) => ({
+                      width: "52px",
+                      height: "52px",
+                      borderRadius: "50%",
+                      backgroundColor: theme2.semantic.background.normal.alternative,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }),
+                    children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(IconCamera, {
+                      sx: (theme2) => ({ fontSize: "26px", color: theme2.semantic.label.alternative })
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "4px",
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                        variant: "label1",
+                        weight: "medium",
+                        children: "영수증 사진 업로드"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                        variant: "caption1",
+                        sx: (theme2) => ({ color: theme2.semantic.label.assistive }),
+                        children: "JPG · PNG · PDF 지원"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                sx: (theme2) => ({
+                  padding: "12px",
+                  borderRadius: "10px",
+                  backgroundColor: theme2.semantic.background.normal.alternative,
+                  display: "flex",
+                  gap: "8px"
+                }),
+                children: [
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                    variant: "caption2",
+                    children: "\uD83D\uDCA1"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                    variant: "caption2",
+                    sx: (theme2) => ({ color: theme2.semantic.label.alternative }),
+                    children: "상품명·금액·날짜가 선명하게 보이도록 촬영해주세요. 주소·연락처 등 개인정보는 자동 마스킹됩니다."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("input", {
+                ref: fileInputRef,
+                type: "file",
+                accept: "image/*,application/pdf",
+                style: { display: "none" },
+                onChange: handleReceiptUpload
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          tab === 1 && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+            flexDirection: "column",
+            sx: { paddingInline: "16px" },
+            gap: "8px",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                variant: "caption1",
+                sx: (theme2) => ({ color: theme2.semantic.label.alternative, paddingBottom: "4px" }),
+                children: "최근 구매 내역 · 네이버페이 · 카카오페이 · 토스페이"
+              }, undefined, false, undefined, this),
+              MOCK_PURCHASE_RECORDS.map((record2) => /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                as: "button",
+                onClick: () => handleSelectPurchaseRecord(record2),
+                sx: (theme2) => ({
+                  padding: "14px",
+                  borderRadius: "12px",
+                  border: `1.5px solid ${theme2.semantic.line.solid.normal}`,
+                  background: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  transition: "all 0.15s"
+                }),
+                children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  gap: "8px",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                      flexDirection: "column",
+                      gap: "5px",
+                      sx: { flex: 1, minWidth: 0 },
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                          alignItems: "center",
+                          gap: "6px",
+                          children: [
+                            /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                              sx: {
+                                width: "8px",
+                                height: "8px",
+                                borderRadius: "50%",
+                                backgroundColor: PLATFORM_COLORS[record2.platform] ?? "#888",
+                                flexShrink: 0
+                              }
+                            }, undefined, false, undefined, this),
+                            /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                              variant: "caption2",
+                              weight: "bold",
+                              sx: (theme2) => ({ color: theme2.semantic.label.alternative }),
+                              children: record2.platform
+                            }, undefined, false, undefined, this),
+                            /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                              variant: "caption2",
+                              sx: (theme2) => ({ color: theme2.semantic.label.assistive }),
+                              children: record2.date
+                            }, undefined, false, undefined, this)
+                          ]
+                        }, undefined, true, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                          variant: "label2",
+                          weight: "medium",
+                          sx: {
+                            textAlign: "left",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap"
+                          },
+                          children: record2.productName
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                          variant: "caption2",
+                          sx: (theme2) => ({ color: theme2.semantic.label.assistive }),
+                          children: [
+                            "주문번호 ",
+                            record2.orderId
+                          ]
+                        }, undefined, true, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                      variant: "label1",
+                      weight: "bold",
+                      sx: { flexShrink: 0 },
+                      children: [
+                        record2.amount.toLocaleString(),
+                        "원"
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, record2.id, false, undefined, this))
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      isScanning && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "24px",
+        sx: { padding: "24px 24px" },
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+            sx: (theme2) => ({
+              width: "220px",
+              aspectRatio: "3/4",
+              borderRadius: "12px",
+              backgroundColor: theme2.semantic.background.normal.alternative,
+              position: "relative",
+              overflow: "hidden",
+              border: `1.5px solid ${theme2.semantic.line.solid.normal}`
+            }),
+            children: [
+              draft.receiptImageUrl && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("img", {
+                src: draft.receiptImageUrl,
+                alt: "영수증",
+                style: { width: "100%", height: "100%", objectFit: "cover", opacity: 0.35 }
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(motion.div, {
+                animate: { top: ["0%", "100%", "0%"] },
+                transition: { duration: 1.8, repeat: Infinity, ease: "linear" },
+                style: {
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  height: "3px",
+                  background: "linear-gradient(90deg, transparent, #007aff 30%, #5ac8fa 50%, #007aff 70%, transparent)",
+                  boxShadow: "0 0 16px 6px rgba(0,122,255,0.45)"
+                }
+              }, undefined, false, undefined, this),
+              [
+                { top: "6px", left: "6px", borderTop: "2px solid #007aff", borderLeft: "2px solid #007aff" },
+                { top: "6px", right: "6px", borderTop: "2px solid #007aff", borderRight: "2px solid #007aff" },
+                { bottom: "6px", left: "6px", borderBottom: "2px solid #007aff", borderLeft: "2px solid #007aff" },
+                { bottom: "6px", right: "6px", borderBottom: "2px solid #007aff", borderRight: "2px solid #007aff" }
+              ].map((style, i) => /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                sx: { position: "absolute", width: "16px", height: "16px", borderRadius: "2px", ...style }
+              }, i, false, undefined, this)),
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                sx: {
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                  paddingBottom: "12px",
+                  background: "linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.55) 100%)"
+                },
+                children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                  variant: "label2",
+                  weight: "bold",
+                  sx: { color: "#fff" },
+                  children: [
+                    "분석 중 ",
+                    scanProgress,
+                    "%"
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "8px",
+            sx: { width: "100%" },
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                sx: (theme2) => ({
+                  width: "100%",
+                  height: "6px",
+                  borderRadius: "100px",
+                  backgroundColor: theme2.semantic.line.solid.alternative,
+                  overflow: "hidden"
+                }),
+                children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(motion.div, {
+                  animate: { width: `${scanProgress}%` },
+                  transition: { duration: 0.12, ease: "linear" },
+                  style: {
+                    height: "100%",
+                    borderRadius: "100px",
+                    background: "linear-gradient(90deg, #007aff, #5ac8fa)"
+                  }
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                variant: "caption1",
+                sx: (theme2) => ({ color: theme2.semantic.label.alternative }),
+                children: "영수증에서 구매 정보를 추출하고 있어요…"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "6px",
+            children: ["상품명 확인 중", "금액 검증 중", "날짜 추출 중", "개인정보 마스킹 중"].map((hint, i) => /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(motion.div, {
+              initial: { opacity: 0, y: 6 },
+              animate: { opacity: [0, 1, 1, 0], y: [6, 0, 0, -6] },
+              transition: { delay: i * 0.6, duration: 0.6, repeat: Infinity, repeatDelay: 2.4 - 0.6 },
+              children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                variant: "caption2",
+                sx: (theme2) => ({ color: theme2.semantic.label.assistive }),
+                children: [
+                  hint,
+                  "…"
+                ]
+              }, undefined, true, undefined, this)
+            }, hint, false, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      isSuccess && extracted && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+        flexDirection: "column",
+        gap: "14px",
+        sx: { padding: "0 16px" },
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(motion.div, {
+            initial: { opacity: 0, y: 14 },
+            animate: { opacity: 1, y: 0 },
+            transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+            children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+              sx: (theme2) => ({
+                borderRadius: "14px",
+                border: "1.5px solid #16b162",
+                overflow: "hidden"
+              }),
+              children: [
+                /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                  alignItems: "center",
+                  gap: "8px",
+                  sx: {
+                    padding: "12px 14px",
+                    backgroundColor: "#e6f7ef",
+                    borderBottom: "1px solid #16b16220"
+                  },
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                      variant: "label1",
+                      sx: { color: "#16b162" },
+                      children: "✓"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                      variant: "label1",
+                      weight: "bold",
+                      sx: { color: "#16b162" },
+                      children: "OCR 인증 완료"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                      sx: { flex: 1 }
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                      sx: {
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px"
+                      },
+                      children: [
+                        extracted.platform !== "영수증" && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                          sx: {
+                            width: "8px",
+                            height: "8px",
+                            borderRadius: "50%",
+                            backgroundColor: PLATFORM_COLORS[extracted.platform] ?? "#888"
+                          }
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                          variant: "caption1",
+                          weight: "bold",
+                          sx: { color: "#16b162" },
+                          children: extracted.platform
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                  flexDirection: "column",
+                  sx: { padding: "14px" },
+                  gap: "12px",
+                  children: [
+                    { label: "상품명", value: extracted.productName },
+                    { label: "결제금액", value: `${extracted.amount.toLocaleString()}원` },
+                    { label: "구매일", value: extracted.date }
+                  ].map(({ label, value }) => /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    gap: "8px",
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                        variant: "caption1",
+                        sx: (theme2) => ({ color: theme2.semantic.label.alternative, flexShrink: 0 }),
+                        children: label
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                        variant: "label2",
+                        weight: "medium",
+                        sx: { textAlign: "right", flex: 1 },
+                        children: value
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, label, true, undefined, this))
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          draft.product && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(motion.div, {
+            initial: { opacity: 0, y: 10 },
+            animate: { opacity: 1, y: 0 },
+            transition: { duration: 0.35, delay: 0.1, ease: [0.22, 1, 0.36, 1] },
+            children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+              sx: (theme2) => ({
+                padding: "12px 14px",
+                borderRadius: "12px",
+                border: `1px solid ${theme2.semantic.line.solid.alternative}`,
+                backgroundColor: theme2.semantic.background.normal.alternative
+              }),
+              children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "8px",
+                children: [
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+                    flexDirection: "column",
+                    gap: "2px",
+                    sx: { flex: 1, minWidth: 0 },
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                        variant: "caption2",
+                        sx: (theme2) => ({ color: theme2.semantic.label.assistive }),
+                        children: "선택한 상품과 매칭"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                        variant: "label2",
+                        weight: "medium",
+                        sx: { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+                        children: draft.product.name
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                        variant: "caption2",
+                        sx: (theme2) => ({ color: theme2.semantic.label.alternative }),
+                        children: draft.product.brand
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                    sx: {
+                      padding: "4px 10px",
+                      borderRadius: "100px",
+                      backgroundColor: "#e6f7ef",
+                      flexShrink: 0
+                    },
+                    children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                      variant: "caption1",
+                      weight: "bold",
+                      sx: { color: "#16b162" },
+                      children: "매칭 완료"
+                    }, undefined, false, undefined, this)
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(motion.div, {
+            initial: { opacity: 0 },
+            animate: { opacity: 1 },
+            transition: { duration: 0.3, delay: 0.2 },
+            children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+              sx: (theme2) => ({
+                padding: "10px 12px",
+                borderRadius: "8px",
+                backgroundColor: theme2.semantic.background.normal.alternative
+              }),
+              children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                variant: "caption2",
+                sx: (theme2) => ({ color: theme2.semantic.label.assistive }),
+                children: "\uD83D\uDD12 주소·연락처 등 개인정보는 자동으로 마스킹 처리되었습니다."
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Button, {
+            variant: "outlined",
+            color: "assistive",
+            size: "medium",
+            onClick: handleReset,
+            fullWidth: true,
+            children: "다시 인증하기"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
 var FIT_ITEMS = [
   { key: "shoulder", label: "어깨 폭", left: "좁음", right: "넓음" },
   { key: "length", label: "상체 길이", left: "짧음", right: "긺" },
   { key: "waist", label: "허리 라인", left: "슬림", right: "넉넉" },
   { key: "thickness", label: "소재 두께", left: "얇음", right: "두꺼움" }
 ];
-function Step3Fit({ draft, onUpdate }) {
+function Step4Fit({ draft, onUpdate }) {
   return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
     flexDirection: "column",
     sx: { paddingBottom: "100px" },
@@ -82650,14 +83305,7 @@ function Step3Fit({ draft, onUpdate }) {
     ]
   }, undefined, true, undefined, this);
 }
-function Step4Finish({ draft, onUpdate }) {
-  const receiptInputRef = import_react187.useRef(null);
-  const handleReceiptChange = (e) => {
-    const file2 = e.target.files?.[0];
-    if (!file2)
-      return;
-    onUpdate({ receiptImageUrl: URL.createObjectURL(file2), isVerified: true });
-  };
+function Step5Finish({ draft, onUpdate }) {
   return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
     flexDirection: "column",
     sx: { paddingBottom: "100px" },
@@ -82734,13 +83382,32 @@ function Step4Finish({ draft, onUpdate }) {
       /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
         flexDirection: "column",
         gap: "6px",
-        sx: { padding: "0 16px 24px" },
+        sx: { padding: "0 16px 12px" },
         children: [
-          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
-            variant: "label1",
-            weight: "medium",
-            children: "구매 날짜"
-          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+            alignItems: "center",
+            gap: "6px",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                variant: "label1",
+                weight: "medium",
+                children: "구매 날짜"
+              }, undefined, false, undefined, this),
+              draft.ocrExtracted && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
+                sx: {
+                  padding: "2px 8px",
+                  borderRadius: "100px",
+                  backgroundColor: "#e6f7ef"
+                },
+                children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+                  variant: "caption2",
+                  weight: "bold",
+                  sx: { color: "#16b162" },
+                  children: "OCR 자동입력"
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
           /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(DatePicker, {
             value: draft.purchaseDate,
             onChange: (value) => onUpdate({ purchaseDate: value instanceof Date ? value : null }),
@@ -82750,85 +83417,45 @@ function Step4Finish({ draft, onUpdate }) {
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(SectionHeader, {
-        platform: "mobile",
-        size: "small",
-        children: "구매 인증으로 포인트 받기"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
-        flexDirection: "column",
-        gap: "10px",
-        sx: { padding: "12px 16px 0" },
-        children: draft.receiptImageUrl ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "8px",
-          sx: (theme2) => ({
-            padding: "10px 12px",
-            borderRadius: "8px",
-            border: `1.5px solid ${theme2.semantic.primary.normal}`
-          }),
-          children: [
-            /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
-              alignItems: "center",
-              gap: "8px",
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Thumbnail, {
-                  src: draft.receiptImageUrl,
-                  alt: "영수증",
-                  ratio: "1:1",
-                  width: "36px",
-                  radius: true,
-                  border: true,
-                  sx: { flexShrink: 0 }
-                }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
-                  variant: "label2",
-                  weight: "medium",
-                  children: "영수증 인증 완료"
-                }, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Box, {
-              as: "button",
-              onClick: () => onUpdate({ receiptImageUrl: "", isVerified: false }),
-              sx: { background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex" },
-              children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(IconCircleCloseFill, {
-                sx: (theme2) => ({ fontSize: "20px", color: theme2.semantic.label.alternative })
-              }, undefined, false, undefined, this)
-            }, undefined, false, undefined, this)
-          ]
-        }, undefined, true, undefined, this) : /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Button, {
-          variant: "outlined",
-          color: "assistive",
-          size: "medium",
-          onClick: () => receiptInputRef.current?.click(),
-          fullWidth: true,
-          trailingContent: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+      draft.isVerified && draft.ocrExtracted && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(FlexBox, {
+        alignItems: "center",
+        gap: "8px",
+        sx: (theme2) => ({
+          margin: "0 16px",
+          padding: "10px 14px",
+          borderRadius: "10px",
+          border: "1.5px solid #16b16240",
+          backgroundColor: "#e6f7ef"
+        }),
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
             variant: "caption1",
-            weight: "bold",
-            sx: (theme2) => ({ color: theme2.semantic.accent.foreground.blue }),
-            children: "+2,000P"
+            sx: { color: "#16b162" },
+            children: "✓"
           }, undefined, false, undefined, this),
-          children: "영수증 사진 업로드"
-        }, undefined, false, undefined, this)
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("input", {
-        ref: receiptInputRef,
-        type: "file",
-        accept: "image/*",
-        style: { display: "none" },
-        onChange: handleReceiptChange
-      }, undefined, false, undefined, this)
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Typography, {
+            variant: "caption1",
+            weight: "medium",
+            sx: { color: "#16b162" },
+            children: [
+              "구매 인증 완료 · ",
+              draft.ocrExtracted.platform,
+              " · ",
+              draft.ocrExtracted.date
+            ]
+          }, undefined, true, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
     ]
   }, undefined, true, undefined, this);
 }
-var STEP_LABELS = ["사진", "상품", "핏 평가", "마무리"];
+var STEP_LABELS = ["사진", "상품", "인증", "핏 평가", "마무리"];
 var stepVariants = {
   enter: (dir) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 0 }),
   center: { x: 0, opacity: 1 },
   exit: (dir) => ({ x: dir > 0 ? "-60%" : "60%", opacity: 0 })
 };
+var TOTAL_STEPS = 5;
 function ReviewWritePage() {
   const { pop, push } = useFlow();
   const [step, setStep] = import_react187.useState(1);
@@ -82847,7 +83474,7 @@ function ReviewWritePage() {
     }
   };
   const handleNext = () => {
-    if (step < 4) {
+    if (step < TOTAL_STEPS) {
       setDirection(1);
       setStep((s) => s + 1);
     } else
@@ -82910,11 +83537,15 @@ function ReviewWritePage() {
                   draft,
                   onUpdate: updateDraft
                 }, undefined, false, undefined, this),
-                step === 3 && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Step3Fit, {
+                step === 3 && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Step3OCR, {
                   draft,
                   onUpdate: updateDraft
                 }, undefined, false, undefined, this),
-                step === 4 && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Step4Finish, {
+                step === 4 && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Step4Fit, {
+                  draft,
+                  onUpdate: updateDraft
+                }, undefined, false, undefined, this),
+                step === 5 && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Step5Finish, {
                   draft,
                   onUpdate: updateDraft
                 }, undefined, false, undefined, this)
@@ -82943,7 +83574,7 @@ function ReviewWritePage() {
             disabled: !isStepValid(step, draft),
             fullWidth: true,
             onClick: handleNext,
-            children: step === 4 ? "등록 완료" : "다음"
+            children: step === TOTAL_STEPS ? "등록 완료" : "다음"
           }, undefined, false, undefined, this)
         }, undefined, false, undefined, this),
         /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Modal, {

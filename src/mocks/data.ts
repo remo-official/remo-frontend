@@ -163,7 +163,139 @@ export const MOCK_REVIEWS: Review[] = [
 
 export const MOCK_CHAT_ROOMS: ChatRoom[] = [
   {
-    id: 'c1',
+    id: 'r9',
+    reviewId: 'r9',
+    reviewer: MOCK_USERS[0]!,
+    requester: MOCK_USERS[3]!,
+    product: MOCK_PRODUCTS[0]!,
+    messages: [
+      {
+        id: 'm1',
+        senderId: 'u10',
+        text: '안녕하세요! 재킷 후기 잘 봤어요. 169cm에 S면 기장이 어느 정도 오나요?',
+        timestamp: '2026-05-20T10:10:00',
+      },
+      {
+        id: 'm2',
+        senderId: 'u7',
+        text: '안녕하세요! 저는 허리 딱 오는 기장이에요. 크롭은 아닌데 짧은 편이에요 :)',
+        timestamp: '2026-05-20T10:12:00',
+      },
+      {
+        id: 'm3',
+        senderId: 'u10',
+        text: '오 딱 좋겠다! 원단이 늘어나지 않나요?',
+        timestamp: '2026-05-20T10:15:00',
+      },
+      {
+        id: 'm4',
+        senderId: 'u7',
+        text: '스트레치라 늘어나긴 해도 금방 돌아와요! 활동하기 편해요 😊',
+        timestamp: '2026-05-20T10:16:00',
+      },
+    ],
+  },
+  {
+    id: 'r10',
+    reviewId: 'r10',
+    reviewer: MOCK_USERS[1]!,
+    requester: MOCK_USERS[0]!,
+    product: MOCK_PRODUCTS[1]!,
+    messages: [
+      {
+        id: 'm1',
+        senderId: 'u7',
+        text: '안녕하세요! 알리 티셔츠 어떤 애니메이션인지 여쭤봐도 될까요?',
+        timestamp: '2026-05-25T18:00:00',
+      },
+      {
+        id: 'm2',
+        senderId: 'u8',
+        text: '헌터헌터요! 킬루아 프린팅인데 진짜 이뻐요ㅋㅋ',
+        timestamp: '2026-05-25T18:03:00',
+      },
+      {
+        id: 'm3',
+        senderId: 'u7',
+        text: '오 저도 좋아하는데!! 사이즈는 정사이즈로 시켰어요?',
+        timestamp: '2026-05-25T18:05:00',
+      },
+      {
+        id: 'm4',
+        senderId: 'u8',
+        text: '네 M 시켰는데 딱 맞아요. 알리치고 배송도 빠른 편이었어요',
+        timestamp: '2026-05-25T18:07:00',
+      },
+    ],
+  },
+  {
+    id: 'r11',
+    reviewId: 'r11',
+    reviewer: MOCK_USERS[2]!,
+    requester: MOCK_USERS[0]!,
+    product: MOCK_PRODUCTS[2]!,
+    messages: [
+      {
+        id: 'm1',
+        senderId: 'u7',
+        text: '안녕하세요! 롱슬리브 후기 잘 봤어요. 178cm에 L이면 기장이 길지 않나요?',
+        timestamp: '2026-05-28T20:00:00',
+      },
+      {
+        id: 'm2',
+        senderId: 'u9',
+        text: '기장은 딱 적당해요! 너무 길지도 짧지도 않고 핏이 진짜 예뻐요',
+        timestamp: '2026-05-28T20:02:00',
+      },
+      {
+        id: 'm3',
+        senderId: 'u7',
+        text: '두께감은 어때요? 지금 날씨에 입을만한가요?',
+        timestamp: '2026-05-28T20:04:00',
+      },
+      {
+        id: 'm4',
+        senderId: 'u9',
+        text: '얇은 편이라 봄가을에 딱이에요! 두꺼운 거 싫어하시는 분들한테 강추 🔥',
+        timestamp: '2026-05-28T20:06:00',
+      },
+    ],
+  },
+  {
+    id: 'r12',
+    reviewId: 'r12',
+    reviewer: MOCK_USERS[2]!,
+    requester: MOCK_USERS[0]!,
+    product: MOCK_PRODUCTS[3]!,
+    messages: [
+      {
+        id: 'm1',
+        senderId: 'u7',
+        text: '안녕하세요! 무스탕 사진 진짜 이쁘던데 어떤 사이즈 입으셨어요?',
+        timestamp: '2026-06-01T15:00:00',
+      },
+      {
+        id: 'm2',
+        senderId: 'u9',
+        text: '저 M 입었는데 약간 오버핏으로 입었어요! 딱 맞게 입으시려면 S 추천드려요',
+        timestamp: '2026-06-01T15:02:00',
+      },
+      {
+        id: 'm3',
+        senderId: 'u7',
+        text: '혹시 세탁은 어떻게 하셨어요?',
+        timestamp: '2026-06-01T15:05:00',
+      },
+      {
+        id: 'm4',
+        senderId: 'u9',
+        text: '드라이크리닝 맡겼어요! 집에서 손빨래도 된다고는 하는데 저는 그냥 맡기는 중이에요 🤭',
+        timestamp: '2026-06-01T15:07:00',
+      },
+    ],
+  },
+  {
+    id: 'r13',
     reviewId: 'r13',
     reviewer: MOCK_USERS[3]!,
     requester: MOCK_USERS[0]!,

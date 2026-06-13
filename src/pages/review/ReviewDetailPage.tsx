@@ -247,7 +247,7 @@ export default function ReviewDetailPage() {
               color="primary"
               size="large"
               sx={{ flex: 3 }}
-              onClick={() => push('Chat', { roomId: 'c1' })}
+              onClick={() => push('Chat', { roomId: id })}
             >
               채팅 문의하기
             </Button>

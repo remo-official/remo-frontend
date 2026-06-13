@@ -102,7 +102,7 @@ function GridCard({ review, onClick }: GridCardProps) {
         ratio="4:3"
         portrait
         width="100%"
-        sx={{ aspectRatio: '3/4', overflow: 'hidden' }}
+        sx={{ overflow: 'hidden' }}
         trailingContent={
           isVerified ? (
             <CardThumbnailContent variant="custom">

@@ -45,7 +45,7 @@ export default function HomePage() {
   });
 
   const handleFilterChange = useCallback((f: BodyFilter) => setActiveFilter(f.type), []);
-  const handleChatClick = useCallback((reviewId: string) => push('ReviewDetail', { id: reviewId }), [push]);
+  const handleChatClick = useCallback((reviewId: string) => push('Chat', { roomId: reviewId }), [push]);
   const handleUserClick = useCallback((_userId: string) => replace('Explore', {}, { animate: false }), [replace]);
 
   const filtered = filterReviews(reviews, activeFilter);

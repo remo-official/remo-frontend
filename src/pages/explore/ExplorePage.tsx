@@ -112,11 +112,11 @@ function GridCard({ review, onClick }: GridCardProps) {
         }
       />
       <CardContent>
-        <CardTitle noWrap>{user.name}</CardTitle>
+        <CardTitle noWrap>{product.name}</CardTitle>
+        <CardCaption noWrap>{user.name} · {product.brand}</CardCaption>
         <CardCaption noWrap>
           {user.bodyInfo.height}cm · {user.bodyInfo.weight}kg · {purchasedSize}
         </CardCaption>
-        <CardCaption noWrap>{product.brand} · {product.name}</CardCaption>
       </CardContent>
     </Card>
   );

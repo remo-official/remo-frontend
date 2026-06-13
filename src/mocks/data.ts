@@ -4,7 +4,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u1',
     name: '김민지',
-    avatar: 'https://picsum.photos/seed/user1/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u1',
     bodyInfo: { height: 162, weight: 50, topSize: 'S', bottomSize: '26' },
     tier: 'Muse',
     points: 12400,
@@ -12,7 +12,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u2',
     name: '이서연',
-    avatar: 'https://picsum.photos/seed/user2/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u2',
     bodyInfo: { height: 168, weight: 56, topSize: 'M', bottomSize: '28' },
     tier: 'Mate',
     points: 5800,
@@ -20,7 +20,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u3',
     name: '박지수',
-    avatar: 'https://picsum.photos/seed/user3/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u3',
     bodyInfo: { height: 172, weight: 62, topSize: 'L', bottomSize: '30' },
     tier: 'Mate',
     points: 3200,
@@ -28,7 +28,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u4',
     name: '최예은',
-    avatar: 'https://picsum.photos/seed/user4/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u4',
     bodyInfo: { height: 158, weight: 47, topSize: 'XS', bottomSize: '25' },
     tier: 'Starter',
     points: 1500,
@@ -36,7 +36,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u5',
     name: '정하늘',
-    avatar: 'https://picsum.photos/seed/user5/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u5',
     bodyInfo: { height: 165, weight: 53, topSize: 'S', bottomSize: '27' },
     tier: 'Mate',
     points: 7600,
@@ -44,7 +44,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u6',
     name: '강수빈',
-    avatar: 'https://picsum.photos/seed/user6/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u6',
     bodyInfo: { height: 170, weight: 60, topSize: 'M', bottomSize: '29' },
     tier: 'Starter',
     points: 2100,
@@ -52,7 +52,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u7',
     name: '오채빈',
-    avatar: 'https://picsum.photos/seed/user7/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u7',
     bodyInfo: { height: 169, weight: 50, topSize: 'S', bottomSize: '26' },
     tier: 'Mate',
     points: 4200,
@@ -60,7 +60,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u8',
     name: '김영민',
-    avatar: 'https://picsum.photos/seed/user8/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u8',
     bodyInfo: { height: 175, weight: 62, topSize: 'M', bottomSize: '29' },
     tier: 'Starter',
     points: 1800,
@@ -68,7 +68,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u9',
     name: '백진우',
-    avatar: 'https://picsum.photos/seed/user9/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u9',
     bodyInfo: { height: 178, weight: 72, topSize: 'L', bottomSize: '30' },
     tier: 'Mate',
     points: 6300,
@@ -76,7 +76,7 @@ export const MOCK_USERS: User[] = [
   {
     id: 'u10',
     name: '석주영',
-    avatar: 'https://picsum.photos/seed/user10/100/100',
+    avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=u10',
     bodyInfo: { height: 162, weight: 49, topSize: 'S', bottomSize: '26' },
     tier: 'Starter',
     points: 2700,

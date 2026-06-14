@@ -185,7 +185,7 @@ export const MOCK_CHAT_ROOMS: ChatRoom[] = [
       },
       {
         id: 'm2',
-        senderId: 'u0',
+        senderId: 'u7',
         text: '안녕하세요! 저는 허리 딱 오는 기장이에요. 크롭은 아닌데 짧은 편이에요 :)',
         timestamp: '2026-05-20T10:12:00',
       },
@@ -197,7 +197,7 @@ export const MOCK_CHAT_ROOMS: ChatRoom[] = [
       },
       {
         id: 'm4',
-        senderId: 'u0',
+        senderId: 'u7',
         text: '스트레치라 늘어나긴 해도 금방 돌아와요! 활동하기 편해요 😊',
         timestamp: '2026-05-20T10:16:00',
       },
